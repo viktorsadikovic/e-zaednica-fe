@@ -8,8 +8,7 @@ import {
 } from "@mui/material";
 import { Form, Formik } from "formik";
 import * as _ from "lodash";
-import { useState } from "react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import * as Yup from "yup";
 import { boolean, number, string } from "yup";
 import AmenityService from "../../../api/AmenityService";

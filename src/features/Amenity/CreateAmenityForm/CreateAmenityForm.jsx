@@ -194,7 +194,7 @@ export const CreateAmenityForm = ({ toggleShow, queryParams }) => {
                       }}
                       value={values.repeat || null}
                       options={["EVERY_WEEK", "EVERY_MONTH"]}
-                      renderInput={(props) => <TextField {...props} />}
+                      renderInput={(props) => <TextField {...props} placeholder="Repeat" />}
                       disabled={!values.recurring}
                       onFocus={() => {
                         setFieldValue("repeat", "");
@@ -233,93 +233,99 @@ export const CreateAmenityForm = ({ toggleShow, queryParams }) => {
                       sx={{ marginBottom: "0px!important" }}
                     />
                   </Grid>
-                  <Grid item xs={12} md={4}>
-                    <FormLabel
-                      sx={(theme) => ({
-                        display: "block",
-                        fontSize: "0.875rem",
-                        fontWeight: 700,
-                        textTransform: "uppercase",
-                      })}
-                    >
-                      Start Date
-                    </FormLabel>
-                    <DatePicker
-                      name="startDate"
-                      label=""
-                      value={values.startDate}
-                      onChange={handleDatePickerOnChange((value) => {
-                        setFieldValue("startDate", value);
-                      })}
-                      error={errors.startDate}
-                      placeholder={"Start Date"}
-                      disabled={!values.recurring}
-                      disablePast
-                      formHelperTextProps={{
-                        sx: (theme) => ({
-                          marginLeft: theme.spacing(0),
-                        }),
-                      }}
-                    />
-                  </Grid>
-                  <Grid item xs={12} md={4}>
-                    <FormLabel
-                      sx={(theme) => ({
-                        display: "block",
-                        fontSize: "0.875rem",
-                        fontWeight: 700,
-                        textTransform: "uppercase",
-                      })}
-                    >
-                      Due Date
-                    </FormLabel>
-                    <DatePicker
-                      name="dueDate"
-                      label=""
-                      value={values.dueDate}
-                      onChange={handleDatePickerOnChange((value) => {
-                        setFieldValue("dueDate", value);
-                      })}
-                      error={errors.dueDate}
-                      placeholder={"Due Date"}
-                      disabled={values.recurring}
-                      disablePast
-                      formHelperTextProps={{
-                        sx: (theme) => ({
-                          marginLeft: theme.spacing(0),
-                        }),
-                      }}
-                    />
-                  </Grid>
-                  <Grid item xs={12} md={4}>
-                    <FormLabel
-                      sx={(theme) => ({
-                        display: "block",
-                        fontSize: "0.875rem",
-                        fontWeight: 700,
-                        textTransform: "uppercase",
-                      })}
-                    >
-                      End Date
-                    </FormLabel>
-                    <DatePicker
-                      name="endDate"
-                      label=""
-                      value={values.endDate}
-                      onChange={handleDatePickerOnChange((value) => {
-                        setFieldValue("endDate", value);
-                      })}
-                      error={errors.endDate}
-                      placeholder={"End Date"}
-                      disabled={!values.recurring}
-                      disablePast
-                      formHelperTextProps={{
-                        sx: (theme) => ({
-                          marginLeft: theme.spacing(0),
-                        }),
-                      }}
-                    />
-                  </Grid>
+                  {values.recurring && (
+                    <Grid item xs={12} md={4}>
+                      <FormLabel
+                        sx={(theme) => ({
+                          display: "block",
+                          fontSize: "0.875rem",
+                          fontWeight: 700,
+                          textTransform: "uppercase",
+                        })}
+                      >
+                        Start Date
+                      </FormLabel>
+                      <DatePicker
+                        name="startDate"
+                        label=""
+                        value={values.startDate}
+                        onChange={handleDatePickerOnChange((value) => {
+                          setFieldValue("startDate", value);
+                        })}
+                        error={errors.startDate}
+                        placeholder={"Start Date"}
+                        disabled={!values.recurring}
+                        disablePast
+                        formHelperTextProps={{
+                          sx: (theme) => ({
+                            marginLeft: theme.spacing(0),
+                          }),
+                        }}
+                      />
+                    </Grid>
+                  )}
+                  {!values.recurring && (
+                    <Grid item xs={12} md={4}>
+                      <FormLabel
+                        sx={(theme) => ({
+                          display: "block",
+                          fontSize: "0.875rem",
+                          fontWeight: 700,
+                          textTransform: "uppercase",
+                        })}
+                      >
+                        Due Date
+                      </FormLabel>
+                      <DatePicker
+                        name="dueDate"
+                        label=""
+                        value={values.dueDate}
+                        onChange={handleDatePickerOnChange((value) => {
+                          setFieldValue("dueDate", value);
+                        })}
+                        error={errors.dueDate}
+                        placeholder={"Due Date"}
+                        disabled={values.recurring}
+                        disablePast
+                        formHelperTextProps={{
+                          sx: (theme) => ({
+                            marginLeft: theme.spacing(0),
+                          }),
+                        }}
+                      />
+                    </Grid>
+                  )}
+                  {values.recurring && (
+                    <Grid item xs={12} md={4}>
+                      <FormLabel
+                        sx={(theme) => ({
+                          display: "block",
+                          fontSize: "0.875rem",
+                          fontWeight: 700,
+                          textTransform: "uppercase",
+                        })}
+                      >
+                        End Date
+                      </FormLabel>
+                      <DatePicker
+                        name="endDate"
+                        label=""
+                        value={values.endDate}
+                        onChange={handleDatePickerOnChange((value) => {
+                          setFieldValue("endDate", value);
+                        })}
+                        error={errors.endDate}
+                        placeholder={"End Date"}
+                        disabled={!values.recurring}
+                        disablePast
+                        formHelperTextProps={{
+                          sx: (theme) => ({
+                            marginLeft: theme.spacing(0),
+                          }),
+                        }}
+                      />
+                    </Grid>
+                  )}
                 </Grid>
 
                 <Grid item container xs={12} spacing={1}>

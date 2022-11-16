@@ -1,3 +1,5 @@
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import {
   Accordion,
   AccordionDetails,
@@ -9,11 +11,9 @@ import {
   MenuItem,
   Typography,
 } from "@mui/material";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import colors from "../../ui/utils/colors";
 import { useState } from "react";
-import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { useResidentProfiles } from "../../redux/profiles";
+import colors from "../../ui/utils/colors";
 
 export const ProfilesAccordion = ({
   title,
@@ -69,11 +69,14 @@ export const ProfilesAccordion = ({
     }
     return profiles?.map((profile) => {
       return (
-        <Grid item container marginBottom="10px">
+        <Grid item container marginBottom="10px" key={profile._id}>
           <Grid item xs={1}>
             <Avatar
               alt="Remy Sharp"
-              src="https://www.pngall.com/wp-content/uploads/12/Avatar-Profile-Vector-PNG-Cutout.png"
+              src={
+                profile.user.profileImage ||
+                "https://www.pngall.com/wp-content/uploads/12/Avatar-Profile-Vector-PNG-Cutout.png"
+              }
               sx={{
                 width: { xs: 30, md: 40 },
                 height: { xs: 30, md: 40 },

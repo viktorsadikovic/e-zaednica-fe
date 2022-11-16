@@ -1,8 +1,8 @@
 import { Box, Typography } from "@mui/material";
-import colors from "../../../ui/utils/colors";
 import ReactTimeAgo from "react-time-ago";
+import colors from "../../../ui/utils/colors";
 
-export const MessageRight = ({message}) => {
+export const MessageRight = ({ message }) => {
   return (
     <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
       <Box
@@ -13,8 +13,7 @@ export const MessageRight = ({message}) => {
           padding: "10px",
           backgroundColor: colors.secondary.main,
           maxWidth: "60%",
-          minWidth: '30%',
-          //height: "50px",
+          minWidth: "30%",
           textAlign: "left",
           font: "400 .9em 'Open Sans', sans-serif",
           border: `1px solid ${colors.secondary.main}`,

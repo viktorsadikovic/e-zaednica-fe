@@ -1,21 +1,15 @@
-import React from "react";
 import {
-  Grid,
-  Card,
+  Button, Card,
   CardActions,
-  CardContent,
-  Button,
-  Typography,
+  CardContent, Grid, Typography
 } from "@mui/material";
-import colors from "../../../ui/utils/colors";
-import { useAmenities } from "../../../redux/amenity";
-import { useState } from "react";
-import { useEffect } from "react";
-import AmenityCard from "../../Amenity/AmenityCard/AmenityCard";
-import PendingAmenityCard from "./PendingAmenityCard/PendingAmenityCard";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useAmenities } from "../../../redux/amenity";
 import routes, { getAbsolutePath } from "../../../routes";
 import LoadingSpinner from "../../../ui/components/LoadingSpinner";
+import colors from "../../../ui/utils/colors";
+import PendingAmenityCard from "./PendingAmenityCard/PendingAmenityCard";
 
 const Amenity = () => {
   const [{ pendingAmenities, isLoading }, { findPendingAmenities }] =
@@ -43,11 +37,12 @@ const Amenity = () => {
       sx={{
         minWidth: 275,
         boxShadow: "rgb(0 94 124 / 30%) 0px 0px 21px",
+        marginTop: "2rem",
       }}
     >
       <CardContent sx={{ paddingBottom: "0px" }}>
         <Typography
-          sx={{ fontSize: 30 }}
+          sx={{ fontSize: 25, textTransform: "capitalize", fontWeight: "700" }}
           color={colors.primary.main}
           gutterBottom
         >

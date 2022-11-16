@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from "react";
 import Grid from "@mui/material/Grid";
-import ChooserCard from "./ChooserCard/ChooserCard";
-import colors from "../../ui/utils/colors";
-import { Button } from "../../ui/components/Button";
-import JoinHouseCouncilCard from "./JoinHouseCouncilCard/JoinHouseCouncilCard";
+import React, { useEffect, useState } from "react";
 import { useResidentProfiles } from "../../redux/profiles";
+import { Button } from "../../ui/components/Button";
 import CustomModal from "../../ui/components/Modal/CustomModal";
+import colors from "../../ui/utils/colors";
+import ChooserCard from "./ChooserCard/ChooserCard";
 import { CreateHouseCouncilForm } from "./CreateHouseCouncil/CreateHouseCouncilForm";
+import JoinHouseCouncilCard from "./JoinHouseCouncilCard/JoinHouseCouncilCard";
 
 const Chooser = () => {
   const [open, setOpen] = useState(false);

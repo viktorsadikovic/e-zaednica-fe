@@ -14,8 +14,8 @@ import {
 } from "@mui/material";
 import dayjs from "dayjs";
 import { useState } from "react";
-import { useResidentProfiles } from '../../../../redux/profiles';
-import colors from '../../../../ui/utils/colors';
+import { useResidentProfiles } from "../../../../redux/profiles";
+import colors from "../../../../ui/utils/colors";
 
 const PendingAmenityCard = ({
   amenity,
@@ -57,12 +57,16 @@ const PendingAmenityCard = ({
   };
 
   return (
-    <Grid item xs={12}>
+    <Grid item xs={12} md={6}>
       <Card
         sx={{
-          minWidth: 275,
+          maxWidth: "100%",
           boxShadow: "rgb(0 94 124 / 15%) 0px 0px 21px",
           margin: "0.5rem",
+          minHeight: 350,
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
         }}
       >
         <CardContent>
@@ -77,7 +81,7 @@ const PendingAmenityCard = ({
               </Typography>
             </Grid>
             <Grid item xs={1}>
-              {activeProfile?._id === amenity.creator && (
+              {activeProfile?._id === amenity.creator && false && (
                 <IconButton
                   aria-label="more"
                   id="long-button"

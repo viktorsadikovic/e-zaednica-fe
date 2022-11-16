@@ -1,8 +1,8 @@
 import { Avatar, Box, Typography } from "@mui/material";
-import colors from "../../../ui/utils/colors";
 import ReactTimeAgo from "react-time-ago";
+import colors from "../../../ui/utils/colors";
 
-export const MessageLeft = ({message}) => {
+export const MessageLeft = ({ message }) => {
   return (
     <>
       <Box sx={{ display: "flex", marginLeft: "10px" }}>
@@ -10,11 +10,13 @@ export const MessageLeft = ({message}) => {
           alt={message.user.firstName}
           sx={{
             color: colors.textLight,
-            backgroundColor: colors.secondary.main,
             width: "40px",
             height: "40px",
           }}
-          src="https://www.w3schools.com/howto/img_avatar.png"
+          src={
+            message.user.profileImage ||
+            "https://www.pngall.com/wp-content/uploads/12/Avatar-Profile-Vector-PNG-Cutout.png"
+          }
         ></Avatar>
         <Box>
           <Box sx={{ marginLeft: "20px" }}>
@@ -28,7 +30,7 @@ export const MessageLeft = ({message}) => {
               padding: "10px",
               backgroundColor: colors.primary.main,
               maxWidth: "80%",
-              minWidth: '30%',
+              minWidth: "30%",
               //height: "50px",
               textAlign: "left",
               font: "400 .9em 'Open Sans', sans-serif",

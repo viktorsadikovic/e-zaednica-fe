@@ -8,6 +8,7 @@ const initialState = {
   error: undefined,
   houseCouncil: undefined,
   residents: [],
+  adminChangeRequests: [],
 };
 
 export const getHouseCouncil = createAsyncThunk(
@@ -63,6 +64,45 @@ export const deleteHouseCouncil = createAsyncThunk(
   async (payload, { rejectWithValue }) => {
     try {
       const response = await HouseCouncilService.delete(payload);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
+export const getAdminChangeRequests = createAsyncThunk(
+  "getAdminChangeRequests",
+  async (payload, { rejectWithValue }) => {
+    try {
+      const response = await HouseCouncilService.getAdminChangeRequests();
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
+export const requestAdminChange = createAsyncThunk(
+  "requestAdminChange",
+  async (payload, { rejectWithValue }) => {
+    try {
+      const response = await HouseCouncilService.requestAdminChange(payload);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
+export const submitAdminChangeVote = createAsyncThunk(
+  "submitAdminChangeVote",
+  async (payload, { rejectWithValue }) => {
+    try {
+      const response = await HouseCouncilService.submitAdminChangeVote(
+        payload.id,
+        payload.data
+      );
       return response.data;
     } catch (error) {
       return rejectWithValue(error);
@@ -145,6 +185,19 @@ export const houseCouncilSlice = createSlice({
         state.error = undefined;
         state.houseCouncil = undefined;
         state.residents = undefined;
+      })
+      .addCase(getAdminChangeRequests.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+      })
+      .addCase(getAdminChangeRequests.pending, (state) => {
+        state.isLoading = true;
+        state.error = undefined;
+      })
+      .addCase(getAdminChangeRequests.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.error = undefined;
+        state.adminChangeRequests = action.payload;
       });
   },
 });
@@ -161,6 +214,10 @@ export const useHouseCouncil = () => {
       joinHouseCouncil: (payload) => dispatch(joinHouseCouncil(payload)),
       editHouseCouncil: (payload) => dispatch(editHouseCouncil(payload)),
       deleteHouseCouncil: (payload) => dispatch(deleteHouseCouncil(payload)),
+      getAdminChangeRequests: () => dispatch(getAdminChangeRequests()),
+      requestAdminChange: (payload) => dispatch(requestAdminChange(payload)),
+      submitAdminChangeVote: (payload) =>
+        dispatch(submitAdminChangeVote(payload)),
     }),
     [dispatch]
   );

@@ -10,7 +10,6 @@ import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useAnnouncements } from "../../../redux/announcements";
 import routes, { getAbsolutePath } from "../../../routes";
-import LoadingSpinner from "../../../ui/components/LoadingSpinner";
 import colors from "../../../ui/utils/colors";
 import ShortAnnouncement from "../../Announcements/Announcement/ShortAnnouncement";
 
@@ -46,14 +45,13 @@ const TopAnnouncements = () => {
     <Card sx={{ minWidth: 275, boxShadow: "rgb(0 94 124 / 30%) 0px 0px 21px" }}>
       <CardContent sx={{ paddingBottom: "0px" }}>
         <Typography
-          sx={{ fontSize: 25 }}
+          sx={{ fontSize: 25, textTransform: "capitalize", fontWeight: "700" }}
           color={colors.primary.main}
           gutterBottom
         >
           Top Announcements
         </Typography>
-        {isLoading && <LoadingSpinner />}
-        {!isLoading && renderTopAnnouncements()}
+        {renderTopAnnouncements()}
       </CardContent>
       <CardActions>
         <Link

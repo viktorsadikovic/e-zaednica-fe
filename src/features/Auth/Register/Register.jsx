@@ -1,22 +1,22 @@
-import { Grid, useMediaQuery, styled, Typography } from "@mui/material";
-import React, { useState } from "react";
-import colors from "../../../ui/utils/colors";
-import { Button } from "../../../ui/components/Button";
-import { Input } from "../../../ui/components/Input";
+import { Grid, styled, Typography, useMediaQuery } from "@mui/material";
 import MuiLink from "@mui/material/Link";
+import { Form, Formik } from "formik";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import routes, { getAbsolutePath } from "../../../routes";
 import * as Yup from "yup";
 import { ref, string } from "yup";
-import { Form, Formik } from "formik";
 import { useAuth } from "../../../redux/auth";
+import routes, { getAbsolutePath } from "../../../routes";
+import { Button } from "../../../ui/components/Button";
+import { DatePicker } from "../../../ui/components/DatePicker/DatePicker";
+import { Input } from "../../../ui/components/Input";
+import colors from "../../../ui/utils/colors";
 import {
   getDate18YearsAgo,
   handleDatePickerOnChange,
   isOver18,
-  isValidDate,
+  isValidDate
 } from "../../../ui/utils/dates";
-import { DatePicker } from "../../../ui/components/DatePicker/DatePicker";
 
 const StyledLink = styled((props) => <MuiLink {...props} component={Link} />)({
   color: colors.primary.main,

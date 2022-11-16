@@ -12,8 +12,7 @@ import {
   MenuItem,
   Typography,
 } from "@mui/material";
-import { useEffect } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ReactTimeAgo from "react-time-ago";
 import CommentService from "../../../api/CommentService";
 import { useAnnouncements } from "../../../redux/announcements";
@@ -33,9 +32,10 @@ const Announcement = ({ announcement }) => {
   const [comment, setComment] = useState("");
   const [{ activeProfile }] = useResidentProfiles();
   const [comments, setComments] = useState([]);
+  console.log(announcement);
 
   const [
-    { isLoading, error },
+    { isLoading },
     {
       deleteAnnouncement,
       getAnnouncementsByHouseCouncil,
@@ -90,6 +90,7 @@ const Announcement = ({ announcement }) => {
       files: [],
     }).then((res) => {
       setComments([res.data, ...comments]);
+      setComment("");
     });
   };
 
@@ -103,7 +104,7 @@ const Announcement = ({ announcement }) => {
     CommentService.getCommentsByAnnouncement(announcement._id).then((res) =>
       setComments(res.data)
     );
-  }, []);
+  }, [announcement._id]);
 
   const renderComments = () => {
     return comments.map((comment) => (
@@ -185,7 +186,10 @@ const Announcement = ({ announcement }) => {
             <Grid item xs={2} md={1}>
               <Avatar
                 alt="Remy Sharp"
-                src="https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=2000"
+                src={
+                  announcement.user.profileImage ||
+                  "https://www.pngall.com/wp-content/uploads/12/Avatar-Profile-Vector-PNG-Cutout.png"
+                }
                 sx={{
                   width: { xs: 44, md: 50 },
                   height: { xs: 44, md: 50 },
@@ -199,8 +203,7 @@ const Announcement = ({ announcement }) => {
               sx={{ paddingLeft: { xs: "1.2rem", md: "0.2rem" } }}
             >
               <Grid item xs={12}>
-                {announcement.user.firstName}{" "}
-                {announcement.user.lastName}
+                {announcement.user.firstName} {announcement.user.lastName}
               </Grid>
               <Grid item xs={12} sx={{ color: colors.monochromes.gray[800] }}>
                 <ReactTimeAgo
@@ -295,7 +298,10 @@ const Announcement = ({ announcement }) => {
             <Grid item xs={2} md={1}>
               <Avatar
                 alt="Remy Sharp"
-                src="https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=2000"
+                src={
+                  announcement.user.profileImage ||
+                  "https://www.pngall.com/wp-content/uploads/12/Avatar-Profile-Vector-PNG-Cutout.png"
+                }
                 sx={{
                   width: { xs: 30, md: 50 },
                   height: { xs: 30, md: 50 },

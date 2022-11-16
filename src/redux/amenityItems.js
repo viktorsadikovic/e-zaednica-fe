@@ -79,6 +79,18 @@ export const changeAmenityItemStatus = createAsyncThunk(
   }
 );
 
+export const exportAmenityItems = createAsyncThunk(
+  "exportAmenityItems",
+  async (payload, { rejectWithValue }) => {
+    try {
+      const response = await AmenityItemService.exportAmenityItems(payload);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
 export const amenityItemsSlice = createSlice({
   name: "amenityItems",
   initialState,
@@ -139,6 +151,7 @@ export const useAmenityItems = () => {
       submitAmenityItem: (payload) => dispatch(submitAmenityItem(payload)),
       changeAmenityItemStatus: (payload) =>
         dispatch(changeAmenityItemStatus(payload)),
+      exportAmenityItems: (payload) => dispatch(exportAmenityItems(payload)),
     }),
     [dispatch]
   );

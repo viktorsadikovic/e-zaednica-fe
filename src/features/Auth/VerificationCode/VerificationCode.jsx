@@ -1,12 +1,12 @@
 import { Grid, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import colors from "../../../ui/utils/colors";
-import { Button } from "../../../ui/components/Button";
-import { Icon, IconName } from "../../../ui/components/Icon";
 import ReactInputVerificationCode from "react-input-verification-code";
+import { createSearchParams, useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../../redux/auth";
 import routes, { getAbsolutePath } from "../../../routes";
-import { createSearchParams, useNavigate, useParams } from "react-router-dom";
+import { Button } from "../../../ui/components/Button";
+import { Icon, IconName } from "../../../ui/components/Icon";
+import colors from "../../../ui/utils/colors";
 
 const VerificationCode = () => {
   const [

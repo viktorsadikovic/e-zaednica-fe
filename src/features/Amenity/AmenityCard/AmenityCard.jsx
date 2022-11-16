@@ -164,6 +164,10 @@ const AmenityCard = ({
           minWidth: 275,
           boxShadow: "rgb(0 94 124 / 15%) 0px 0px 21px",
           margin: "0.5rem",
+          minHeight: 350,
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
         }}
       >
         <CardContent>
@@ -178,7 +182,7 @@ const AmenityCard = ({
               </Typography>
             </Grid>
             <Grid item xs={1}>
-                {renderMenu()}
+              {renderMenu()}
             </Grid>
           </Grid>
 

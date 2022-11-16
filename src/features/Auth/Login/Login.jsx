@@ -1,12 +1,12 @@
-import { Grid, useMediaQuery, Typography, styled } from "@mui/material";
+import { Grid, styled, Typography, useMediaQuery } from "@mui/material";
 import MuiLink from "@mui/material/Link";
-import React, { useState, useRef, useEffect } from "react";
-import colors from "../../../ui/utils/colors";
+import React, { useEffect, useRef, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../../redux/auth";
+import routes, { getAbsolutePath } from "../../../routes";
 import { Button } from "../../../ui/components/Button";
 import { Input } from "../../../ui/components/Input";
-import { Link, useNavigate } from "react-router-dom";
-import routes, { getAbsolutePath } from "../../../routes";
-import { useAuth } from "../../../redux/auth";
+import colors from "../../../ui/utils/colors";
 
 const StyledLink = styled((props) => <MuiLink {...props} component={Link} />)({
   color: colors.primary.main,

@@ -8,6 +8,7 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer";
 import SupervisorAccountIcon from "@mui/icons-material/SupervisorAccount";
 import SwitchAccountIcon from "@mui/icons-material/SwitchAccount";
+import { Badge } from "@mui/material";
 import Divider from "@mui/material/Divider";
 import MuiDrawer from "@mui/material/Drawer";
 import IconButton from "@mui/material/IconButton";
@@ -17,10 +18,14 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import { styled, useTheme } from "@mui/material/styles";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
+import { io } from "socket.io-client";
 import { toggleMenu } from "./redux/actions";
 import { useAuth } from "./redux/auth";
+import { useNotifications } from "./redux/notification";
+import { useResidentProfiles } from "./redux/profiles";
 import routes, { getAbsolutePath } from "./routes";
 
 const drawerWidth = 250;
@@ -78,6 +83,66 @@ const Sidebar = () => {
   const dispatch = useDispatch();
   const [{}, { logout }] = useAuth();
   const open = useSelector((state) => state.menu.isSidebarOpened);
+  const [{ activeProfile }] = useResidentProfiles();
+  const [
+    {
+      chatNotifications,
+      announcementNotifications,
+      amenityNotifications,
+      amenityItemNotifications,
+      profileNotifications,
+    },
+    {
+      getChatNotifications,
+      getAmenityNotifications,
+      getAmenityItemNotifications,
+      getAnnouncementNotifications,
+      getProfileNotifications,
+    },
+  ] = useNotifications();
+
+  const [socket, setSocket] = useState();
+
+  useEffect(() => {
+    const newSocket = io("http://localhost:3333");
+    setSocket(newSocket);
+  }, [setSocket]);
+
+  const notificationListener = (message) => {
+    getChatNotifications();
+    getAmenityNotifications();
+    getAmenityItemNotifications();
+    getAnnouncementNotifications();
+    getProfileNotifications();
+  };
+
+  useEffect(() => {
+    socket?.on(
+      `notification-${activeProfile?.houseCouncil?._id}`,
+      notificationListener
+    );
+    return () =>
+      socket?.off(
+        `notification-${activeProfile?.houseCouncil?._id}`,
+        notificationListener
+      );
+  }, [notificationListener, activeProfile?.houseCouncil]);
+
+  useEffect(() => {
+    if (activeProfile) {
+      getChatNotifications();
+    }
+    // getAmenityNotifications();
+    // getAmenityItemNotifications();
+    // getAnnouncementNotifications();
+    // getProfileNotifications();
+  }, [
+    getChatNotifications,
+    // getAmenityNotifications,
+    // getAmenityItemNotifications,
+    // getAnnouncementNotifications,
+    // getProfileNotifications,
+  ]);
 
   const handleDrawerClose = () => {
     dispatch(toggleMenu(false));
@@ -102,131 +167,183 @@ const Sidebar = () => {
       </DrawerHeader>
       <Divider />
       <List>
-        <Link
-          key="dashboard"
-          to={routes.dashboard.path}
-          style={{ textDecoration: "none", color: "black" }}
-          onClick={handleDrawerClose}
-        >
-          <ListItem key="Dashboard" disablePadding sx={{ display: "block" }}>
-            <ListItemButton
-              sx={{
-                minHeight: 48,
-                justifyContent: open ? "initial" : "center",
-                px: 2.5,
-              }}
+        {activeProfile && (
+          <>
+            <Link
+              key="dashboard"
+              to={routes.dashboard.path}
+              style={{ textDecoration: "none", color: "black" }}
+              onClick={handleDrawerClose}
             >
-              {" "}
-              <ListItemIcon
-                sx={{
-                  minWidth: 0,
-                  mr: open ? 3 : "auto",
-                  justifyContent: "center",
-                }}
+              <ListItem
+                key="Dashboard"
+                disablePadding
+                sx={{ display: "block" }}
               >
-                <DashboardIcon />
-              </ListItemIcon>
-              <ListItemText
-                primary="Dashboard"
-                sx={{ opacity: open ? 1 : 0 }}
-              />
-            </ListItemButton>
-          </ListItem>
-        </Link>
-        <Link
-          key="announcements"
-          to={routes.announcements.path}
-          style={{ textDecoration: "none", color: "black" }}
-          onClick={handleDrawerClose}
-        >
-          <ListItem
-            key="Announcements"
-            disablePadding
-            sx={{ display: "block" }}
-          >
-            <ListItemButton
-              sx={{
-                minHeight: 48,
-                justifyContent: open ? "initial" : "center",
-                px: 2.5,
-              }}
+                <ListItemButton
+                  sx={{
+                    minHeight: 48,
+                    justifyContent: open ? "initial" : "center",
+                    px: 2.5,
+                  }}
+                >
+                  {" "}
+                  <ListItemIcon
+                    sx={{
+                      minWidth: 0,
+                      mr: open ? 3 : "auto",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <DashboardIcon />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary="Dashboard"
+                    sx={{ opacity: open ? 1 : 0 }}
+                  />
+                </ListItemButton>
+              </ListItem>
+            </Link>
+            <Link
+              key="announcements"
+              to={routes.announcements.path}
+              style={{ textDecoration: "none", color: "black" }}
+              onClick={handleDrawerClose}
             >
-              {" "}
-              <ListItemIcon
-                sx={{
-                  minWidth: 0,
-                  mr: open ? 3 : "auto",
-                  justifyContent: "center",
-                }}
+              <ListItem
+                key="Announcements"
+                disablePadding
+                sx={{ display: "block" }}
               >
-                <CampaignIcon />
-              </ListItemIcon>
-              <ListItemText
-                primary="Announcements"
-                sx={{ opacity: open ? 1 : 0 }}
-              />
-            </ListItemButton>
-          </ListItem>
-        </Link>
-        <Link
-          key="amenities"
-          to={routes.amenities.path}
-          style={{ textDecoration: "none", color: "black" }}
-          onClick={handleDrawerClose}
-        >
-          <ListItem key="Amenities" disablePadding sx={{ display: "block" }}>
-            <ListItemButton
-              sx={{
-                minHeight: 48,
-                justifyContent: open ? "initial" : "center",
-                px: 2.5,
-              }}
+                <ListItemButton
+                  sx={{
+                    minHeight: 48,
+                    justifyContent: open ? "initial" : "center",
+                    px: 2.5,
+                  }}
+                >
+                  {" "}
+                  <ListItemIcon
+                    sx={{
+                      minWidth: 0,
+                      mr: open ? 3 : "auto",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <CampaignIcon />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary="Announcements"
+                    sx={{ opacity: open ? 1 : 0 }}
+                  />
+                </ListItemButton>
+              </ListItem>
+            </Link>
+            <Link
+              key="amenities"
+              to={routes.amenities.path}
+              style={{ textDecoration: "none", color: "black" }}
+              onClick={handleDrawerClose}
             >
-              {" "}
-              <ListItemIcon
-                sx={{
-                  minWidth: 0,
-                  mr: open ? 3 : "auto",
-                  justifyContent: "center",
-                }}
+              <ListItem
+                key="Amenities"
+                disablePadding
+                sx={{ display: "block" }}
               >
-                <BallotIcon />
-              </ListItemIcon>
-              <ListItemText
-                primary="Amenities"
-                sx={{ opacity: open ? 1 : 0 }}
-              />
-            </ListItemButton>
-          </ListItem>
-        </Link>
-        <Link
-          key="chat"
-          to={routes.chat.path}
-          style={{ textDecoration: "none", color: "black" }}
-          onClick={handleDrawerClose}
-        >
-          <ListItem key="Chat" disablePadding sx={{ display: "block" }}>
-            <ListItemButton
-              sx={{
-                minHeight: 48,
-                justifyContent: open ? "initial" : "center",
-                px: 2.5,
-              }}
+                <ListItemButton
+                  sx={{
+                    minHeight: 48,
+                    justifyContent: open ? "initial" : "center",
+                    px: 2.5,
+                  }}
+                >
+                  {" "}
+                  <ListItemIcon
+                    sx={{
+                      minWidth: 0,
+                      mr: open ? 3 : "auto",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <BallotIcon />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary="Amenities"
+                    sx={{ opacity: open ? 1 : 0 }}
+                  />
+                </ListItemButton>
+              </ListItem>
+            </Link>
+            <Link
+              key="chat"
+              to={routes.chat.path}
+              style={{ textDecoration: "none", color: "black" }}
+              onClick={handleDrawerClose}
             >
-              {" "}
-              <ListItemIcon
-                sx={{
-                  minWidth: 0,
-                  mr: open ? 3 : "auto",
-                  justifyContent: "center",
-                }}
+              <ListItem key="Chat" disablePadding sx={{ display: "block" }}>
+                <ListItemButton
+                  sx={{
+                    minHeight: 48,
+                    justifyContent: open ? "initial" : "center",
+                    px: 2.5,
+                  }}
+                >
+                  {" "}
+                  <ListItemIcon
+                    sx={{
+                      minWidth: 0,
+                      mr: open ? 3 : "auto",
+                      justifyContent: "center",
+                    }}
+                  >
+                    {chatNotifications !== 0 && (
+                      <Badge badgeContent={chatNotifications} color="primary">
+                        <QuestionAnswerIcon />
+                      </Badge>
+                    )}
+                    {chatNotifications === 0 && <QuestionAnswerIcon />}
+                  </ListItemIcon>
+                  <ListItemText primary="Chat" sx={{ opacity: open ? 1 : 0 }} />
+                </ListItemButton>
+              </ListItem>
+            </Link>
+            <Link
+              key="residents"
+              to={routes.residents.path}
+              style={{ textDecoration: "none", color: "black" }}
+              onClick={handleDrawerClose}
+            >
+              <ListItem
+                key="residents"
+                disablePadding
+                sx={{ display: "block" }}
               >
-                <QuestionAnswerIcon />
-              </ListItemIcon>
-              <ListItemText primary="Chat" sx={{ opacity: open ? 1 : 0 }} />
-            </ListItemButton>
-          </ListItem>
-        </Link>
+                <ListItemButton
+                  sx={{
+                    minHeight: 48,
+                    justifyContent: open ? "initial" : "center",
+                    px: 2.5,
+                  }}
+                >
+                  {" "}
+                  <ListItemIcon
+                    sx={{
+                      minWidth: 0,
+                      mr: open ? 3 : "auto",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <SupervisorAccountIcon />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary="Residents"
+                    sx={{ opacity: open ? 1 : 0 }}
+                  />
+                </ListItemButton>
+              </ListItem>
+            </Link>
+          </>
+        )}
         <Link
           key="chooser"
           to={routes.chooser.path}
@@ -314,68 +431,6 @@ const Sidebar = () => {
             <ListItemText primary="Logout" sx={{ opacity: open ? 1 : 0 }} />
           </ListItemButton>
         </ListItem>
-      </List>
-      <Divider />
-      <List>
-        <Link
-          key="residents"
-          to={routes.residents.path}
-          style={{ textDecoration: "none", color: "black" }}
-          onClick={handleDrawerClose}
-        >
-          <ListItem key="residents" disablePadding sx={{ display: "block" }}>
-            <ListItemButton
-              sx={{
-                minHeight: 48,
-                justifyContent: open ? "initial" : "center",
-                px: 2.5,
-              }}
-            >
-              {" "}
-              <ListItemIcon
-                sx={{
-                  minWidth: 0,
-                  mr: open ? 3 : "auto",
-                  justifyContent: "center",
-                }}
-              >
-                <SupervisorAccountIcon />
-              </ListItemIcon>
-              <ListItemText
-                primary="Residents"
-                sx={{ opacity: open ? 1 : 0 }}
-              />
-            </ListItemButton>
-          </ListItem>
-        </Link>
-        {["Admin1", "Admin2", "Admin3"].map((text, index) => (
-          <Link
-            key={text}
-            to="/"
-            style={{ textDecoration: "none", color: "black" }}
-          >
-            <ListItem key={text} disablePadding sx={{ display: "block" }}>
-              <ListItemButton
-                sx={{
-                  minHeight: 48,
-                  justifyContent: open ? "initial" : "center",
-                  px: 2.5,
-                }}
-              >
-                <ListItemIcon
-                  sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : "auto",
-                    justifyContent: "center",
-                  }}
-                >
-                  <SupervisorAccountIcon />
-                </ListItemIcon>
-                <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
-              </ListItemButton>
-            </ListItem>
-          </Link>
-        ))}
       </List>
     </Drawer>
   );

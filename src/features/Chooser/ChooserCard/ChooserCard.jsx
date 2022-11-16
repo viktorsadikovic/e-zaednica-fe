@@ -1,10 +1,10 @@
+import { Card, CardContent, Chip, Grid, Typography } from "@mui/material";
 import React from "react";
-import { Grid, Chip, Card, CardContent, Typography } from "@mui/material";
-import colors from "../../../ui/utils/colors";
-import { Icon, IconName } from "../../../ui/components/Icon";
-import { setActiveProfile, useResidentProfiles } from "../../../redux/profiles";
 import { useNavigate } from "react-router-dom";
+import { setActiveProfile, useResidentProfiles } from "../../../redux/profiles";
 import routes, { getAbsolutePath } from "../../../routes";
+import { Icon, IconName } from "../../../ui/components/Icon";
+import colors from "../../../ui/utils/colors";
 
 const ChooserCard = ({ profile }) => {
   const [{}, { switchProfile }] = useResidentProfiles();
@@ -25,14 +25,17 @@ const ChooserCard = ({ profile }) => {
     <Grid
       item
       xs={12}
-      onClick={() => {
-        setActiveProfile(profile);
-        switchProfile(profile._id)
-          .unwrap()
-          .then(() => {
-            console.log("test");
-            navigate(getAbsolutePath(routes.dashboard.path));
-          });
+      onClick={(e) => {
+        if (profile.status === "APPROVED") {
+          setActiveProfile(profile);
+          switchProfile(profile._id)
+            .unwrap()
+            .then(() => {
+              navigate(getAbsolutePath(routes.dashboard.path));
+            });
+        } else {
+          e.preventDefault();
+        }
       }}
     >
       <Card

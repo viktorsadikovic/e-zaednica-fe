@@ -35,13 +35,17 @@ const Comment = ({ comment, onDelete }) => {
   const handleClose = () => {
     setAnchorEl(null);
   };
+  console.log(comment);
 
   return (
     <Grid container sx={{ marginTop: "10px" }}>
       <Grid item xs={2} md={1}>
         <Avatar
           alt="Remy Sharp"
-          src="https://www.pngall.com/wp-content/uploads/12/Avatar-Profile-Vector-PNG-Cutout.png"
+          src={
+            comment.resident.user.profileImage ||
+            "https://www.pngall.com/wp-content/uploads/12/Avatar-Profile-Vector-PNG-Cutout.png"
+          }
           sx={{
             width: { xs: 30, md: 50 },
             height: { xs: 30, md: 50 },

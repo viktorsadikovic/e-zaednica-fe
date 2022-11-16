@@ -1,31 +1,26 @@
-import React from "react";
 import {
-  Grid,
-  Chip,
-  Card,
+  Button, Card,
   CardActions,
-  CardContent,
-  Button,
-  Typography,
-  CircularProgress,
+  CardContent, Grid, Typography
 } from "@mui/material";
-import colors from "../../../ui/utils/colors";
-import { useResidentProfiles } from "../../../redux/profiles";
-import { useAmenityItems } from "../../../redux/amenityItems";
-import { useEffect } from "react";
-import { AmenityItemCard } from "../../Amenity/AmenityItemCard/AmenityItemCard";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useAmenityItems } from "../../../redux/amenityItems";
+import { useResidentProfiles } from "../../../redux/profiles";
 import routes, { getAbsolutePath } from "../../../routes";
 import LoadingSpinner from "../../../ui/components/LoadingSpinner";
+import colors from "../../../ui/utils/colors";
+import { AmenityItemCard } from "../../Amenity/AmenityItemCard/AmenityItemCard";
 
 const AmenityItem = () => {
   const [{ activeProfile }, { edit }] = useResidentProfiles();
-  const [{ amenityItems, isLoading }, { getAmenityItemsByResident }] =
-    useAmenityItems();
+  const [{ amenityItems, isLoading }, { findAmenityItems }] = useAmenityItems();
 
   useEffect(() => {
-    getAmenityItemsByResident({ id: activeProfile?._id }).unwrap();
-  }, [getAmenityItemsByResident, activeProfile?._id]);
+    if (activeProfile?._id) {
+      findAmenityItems({ resident: activeProfile?._id, status: "PENDING" });
+    }
+  }, [findAmenityItems, activeProfile?._id]);
 
   const renderAmenityItems = () => {
     if (!amenityItems.length) {
@@ -56,7 +51,7 @@ const AmenityItem = () => {
     <Card sx={{ minWidth: 275, boxShadow: "rgb(0 94 124 / 30%) 0px 0px 21px" }}>
       <CardContent>
         <Typography
-          sx={{ fontSize: 30 }}
+          sx={{ fontSize: 25, textTransform: "capitalize", fontWeight: "700" }}
           color={colors.primary.main}
           gutterBottom
         >

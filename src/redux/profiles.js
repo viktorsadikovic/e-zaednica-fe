@@ -10,6 +10,7 @@ const initialState = {
   activeProfile: undefined,
   profiles: [],
   residentProfiles: [],
+  residents: [],
 };
 
 export const getResidentProfiles = createAsyncThunk(
@@ -17,6 +18,19 @@ export const getResidentProfiles = createAsyncThunk(
   async (payload, { rejectWithValue }) => {
     try {
       const response = await ResidentProfileService.getMyProfiles();
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
+export const getResidentsByHouseCouncil = createAsyncThunk(
+  "getResidentsByHouseCouncil",
+  async (payload, { rejectWithValue }) => {
+    try {
+      const response =
+        await ResidentProfileService.getResidentsByHouseCouncil();
       return response.data;
     } catch (error) {
       return rejectWithValue(error);
@@ -88,6 +102,18 @@ export const getProfilesByStatus = createAsyncThunk(
   }
 );
 
+export const exportResidents = createAsyncThunk(
+  "exportResidents",
+  async (payload, { rejectWithValue }) => {
+    try {
+      const response = await ResidentProfileService.exportResidents();
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
 export const profilesSlice = createSlice({
   name: "profiles",
   initialState,
@@ -142,6 +168,19 @@ export const profilesSlice = createSlice({
       .addCase(getActiveProfile.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload;
+      })
+      .addCase(getResidentsByHouseCouncil.pending, (state) => {
+        state.isLoading = true;
+        state.error = undefined;
+      })
+      .addCase(getResidentsByHouseCouncil.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.error = undefined;
+        state.residents = action.payload;
+      })
+      .addCase(getResidentsByHouseCouncil.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
       });
     // .addCase(getProfilesByStatus.pending, (state) => {
     //   state.isLoading = true;
@@ -166,9 +205,11 @@ export const useResidentProfiles = () => {
     () => ({
       getResidentProfiles: (payload) => dispatch(getResidentProfiles()),
       getActiveProfile: () => dispatch(getActiveProfile()),
+      getResidentsByHouseCouncil: () => dispatch(getResidentsByHouseCouncil()),
       edit: (payload) => dispatch(edit(payload)),
       switchProfile: (payload) => dispatch(switchProfile(payload)),
       getProfilesByStatus: (payload) => dispatch(getProfilesByStatus(payload)),
+      exportResidents: () => dispatch(exportResidents()),
     }),
     [dispatch]
   );

@@ -1,3 +1,4 @@
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import {
   Avatar,
   Card,
@@ -7,13 +8,12 @@ import {
   IconButton,
   Menu,
   MenuItem,
-  Typography,
+  Typography
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import ResidentProfileService from "../../../api/ResidentProfileService";
 import { useResidentProfiles } from "../../../redux/profiles";
 import colors from "../../../ui/utils/colors";
-import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 
 export const PendingProfiles = ({
   setSelectedAction,
@@ -82,7 +82,10 @@ export const PendingProfiles = ({
           <Grid item xs={1}>
             <Avatar
               alt="Remy Sharp"
-              src="https://www.pngall.com/wp-content/uploads/12/Avatar-Profile-Vector-PNG-Cutout.png"
+              src={
+                profile.user.profileImage ||
+                "https://www.pngall.com/wp-content/uploads/12/Avatar-Profile-Vector-PNG-Cutout.png"
+              }
               sx={{
                 width: { xs: 30, md: 40 },
                 height: { xs: 30, md: 40 },
@@ -92,13 +95,13 @@ export const PendingProfiles = ({
           <Grid item xs={2} sx={{ paddingTop: "0.5rem" }}>
             {profile.user.firstName} {profile.user.lastName}
           </Grid>
-          <Grid item xs={2} sx={{ paddingTop: "0.5rem" }}>
+          <Grid item xs={3} sx={{ paddingTop: "0.5rem" }}>
             {profile.user.email}
           </Grid>
           <Grid item xs={2} sx={{ paddingTop: "0.5rem" }}>
             {profile.user.phone}
           </Grid>
-          <Grid item xs={2} sx={{ paddingTop: "0.5rem" }}>
+          <Grid item xs={1} sx={{ paddingTop: "0.5rem" }}>
             {profile.apartmentNumber}
           </Grid>
           <Grid item xs={2} sx={{ paddingTop: "0.5rem" }}>
@@ -156,12 +159,12 @@ export const PendingProfiles = ({
       sx={{
         minWidth: 275,
         boxShadow: "rgb(0 94 124 / 30%) 0px 0px 21px",
-        marginTop: "5rem",
+        marginTop: "1.5rem",
       }}
     >
       <CardContent>
         <Typography
-          sx={{ fontSize: 30 }}
+          sx={{ fontSize: 25, textTransform: "capitalize", fontWeight: "700" }}
           color={colors.primary.main}
           gutterBottom
         >

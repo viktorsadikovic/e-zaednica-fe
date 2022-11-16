@@ -1,6 +1,8 @@
+import DownloadIcon from "@mui/icons-material/Download";
 import { Grid, Typography } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
+import { useResidentProfiles } from "../../redux/profiles";
 import { Button } from "../../ui/components/Button";
 import colors from "../../ui/utils/colors";
 import { AmenityItemSection } from "./AmenityItemSection/AmenityItemSection";
@@ -9,6 +11,8 @@ import { AmenitySection } from "./AmenitySection/AmenitySection";
 const AmenityPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [isSelected, setIsSelected] = useState(true);
+  const [{ activeProfile }] = useResidentProfiles();
+  const childRef = useRef();
 
   useEffect(() => {
     if (searchParams.get("view") === "amenityItems") {
@@ -22,7 +26,7 @@ const AmenityPage = () => {
         <Grid container sx={{ marginBottom: "1rem" }}>
           <Grid
             item
-            xs={6}
+            xs={4}
             md={2}
             sx={{
               borderRadius: "5px",
@@ -64,7 +68,7 @@ const AmenityPage = () => {
 
           <Grid
             item
-            xs={6}
+            xs={4}
             md={2}
             sx={{
               borderRadius: "5px",
@@ -103,9 +107,31 @@ const AmenityPage = () => {
               </Button>
             </Typography>
           </Grid>
+          {!isSelected && (
+            <Grid item xs={12} md={2} sx={{ marginLeft: "auto" }}>
+              <Typography
+                variant="buttonSmall"
+                sx={{
+                  width: "100%",
+                  color: colors.primary.main,
+                  cursor: "pointer",
+                }}
+              >
+                <Button
+                  size="small"
+                  type="button"
+                  onClick={() => childRef.current.download()}
+                >
+                  {" "}
+                  <DownloadIcon sx={{ marginRight: "0.5rem" }} /> Export Amenity
+                  Items
+                </Button>
+              </Typography>
+            </Grid>
+          )}
         </Grid>
         {isSelected && <AmenitySection />}
-        {!isSelected && <AmenityItemSection />}
+        {!isSelected && <AmenityItemSection ref={childRef} />}
       </Grid>
     </Grid>
   );

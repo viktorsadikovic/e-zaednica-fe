@@ -38,11 +38,15 @@ const JoinHouseCouncilCard = () => {
       >
         <CardContent>
           <Typography
-            sx={{ fontSize: 20 }}
+            sx={{
+              fontSize: 20,
+              fontWeight: "700",
+              textTransform: "capitalize",
+            }}
             color={colors.primary.main}
             gutterBottom
           >
-            Join existing House Council
+            Join Existing House Council
           </Typography>
           <form onSubmit={handleSubmit}>
             <Grid container spacing={1} sx={{ marginTop: "2%" }}>

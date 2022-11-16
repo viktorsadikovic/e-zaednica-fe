@@ -12,11 +12,30 @@ const HouseCouncilService = {
   join: (data) => {
     return axiosClient.post(`${HOUSE_COUNCIL_PREFIX}/join`, data);
   },
+  invite: (data) => {
+    return axiosClient.post(`${HOUSE_COUNCIL_PREFIX}/invite`, data);
+  },
   edit: (id, data) => {
     return axiosClient.post(`${HOUSE_COUNCIL_PREFIX}/edit/${id}}`, data);
   },
   delete: (id) => {
-    return axiosClient.delete(`${HOUSE_COUNCIL_PREFIX}/delete/${id}}`);
+    return axiosClient.delete(`${HOUSE_COUNCIL_PREFIX}/delete/${id}`);
+  },
+  getAdminChangeRequests: () => {
+    console.log("ao")
+    return axiosClient.get(`${HOUSE_COUNCIL_PREFIX}/admin-change-requests/all`);
+  },
+  requestAdminChange: (data) => {
+    return axiosClient.post(
+      `${HOUSE_COUNCIL_PREFIX}/request-admin-change`,
+      data
+    );
+  },
+  submitAdminChangeVote: (id, data) => {
+    return axiosClient.post(
+      `${HOUSE_COUNCIL_PREFIX}/submit-admin-change/${id}`,
+      data
+    );
   },
 };
 

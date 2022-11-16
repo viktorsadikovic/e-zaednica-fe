@@ -1,12 +1,12 @@
-import React from "react";
 import {
-  Grid,
-  Chip,
   Card,
   CardActions,
   CardContent,
+  Chip,
+  Grid,
   Typography,
 } from "@mui/material";
+import React from "react";
 import colors from "../../../../ui/utils/colors";
 
 const AmenityItemCard = ({ amenityItem }) => {
@@ -26,8 +26,13 @@ const AmenityItemCard = ({ amenityItem }) => {
     <Grid item xs={12} md={6}>
       <Card
         sx={{
-          minWidth: 275,
+          maxWidth: "100%",
           boxShadow: "rgb(0 94 124 / 15%) 0px 0px 21px",
+          margin: "0.5rem",
+          minHeight: 350,
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
         }}
       >
         <CardContent>

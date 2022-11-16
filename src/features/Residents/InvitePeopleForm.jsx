@@ -1,39 +1,38 @@
 import { Box, FormLabel, Grid } from "@mui/material";
 import { Form, Formik } from "formik";
+import { useState } from "react";
 import * as Yup from "yup";
 import { string } from "yup";
-import { useAnnouncements } from "../../../redux/announcements";
-import { Button } from "../../../ui/components/Button";
-import { Input } from "../../../ui/components/Input";
-import colors from "../../../ui/utils/colors";
+import HouseCouncilService from "../../api/HouseCouncilService";
+import { Button } from "../../ui/components/Button";
+import { Input } from "../../ui/components/Input";
+import colors from "../../ui/utils/colors";
 
 const initialValues = {
-  title: "",
-  description: "",
+  email: "",
 };
 
 const validationSchema = Yup.object().shape({
-  title: string().required(),
-  description: string().required(),
+  email: string().email().required("Email is required field"),
 });
 
-export const CreateAnnouncementForm = ({ toggleShow }) => {
-  const [
-    { isLoading, error },
-    { createAnnouncement, getAnnouncementsByHouseCouncil, getTopAnnouncements },
-  ] = useAnnouncements();
-  const handleSubmit = ({ title, description }) => {
-    createAnnouncement({ title, description })
-      .unwrap()
-      .then(() => {
+export const InvitePeopleForm = ({ toggleShow }) => {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSubmit = ({ email }) => {
+    setIsLoading(true);
+    HouseCouncilService.invite({ email })
+      .then((response) => {
         toggleShow(false);
-        getAnnouncementsByHouseCouncil();
-        getTopAnnouncements();
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        setIsLoading(false);
       });
   };
 
   return (
-    <Grid item xs={12} pt="1rem">
+    <Grid item xs={12} pt="1rem" sx={{ width: "500px" }}>
       <Box
         sx={(theme) => ({
           backgroundColor: { xs: "none", md: colors.white },
@@ -62,7 +61,7 @@ export const CreateAnnouncementForm = ({ toggleShow }) => {
             return (
               <Form>
                 <Grid container spacing={1}>
-                  <Grid item xs={12} md={12}>
+                  <Grid item xs={12} pt="1.25rem">
                     <FormLabel
                       sx={(theme) => ({
                         display: "block",
@@ -75,53 +74,28 @@ export const CreateAnnouncementForm = ({ toggleShow }) => {
                         },
                       })}
                     >
-                      Title
+                      Email
                     </FormLabel>
                     <Input
-                      autoComplete="title"
-                      name="title"
-                      value={values.title}
+                      autoComplete="email"
+                      name="email"
+                      value={values.email}
                       onChange={handleChange}
                       onBlur={handleBlur}
                       label=""
-                      placeholder="Title"
-                      error={touched.title && errors.title ? errors.title : ""}
-                    />
-                  </Grid>
-                  <Grid item xs={12} md={12}>
-                    <FormLabel
-                      sx={(theme) => ({
-                        display: "block",
-                        fontSize: "0.875rem",
-                        fontWeight: 700,
-                        textTransform: "uppercase",
-                        marginBottom: {
-                          md: theme.spacing(0.6),
-                          xs: theme.spacing(0),
-                        },
-                      })}
-                    >
-                      Description
-                    </FormLabel>
-                    <Input
-                      autoComplete="description"
-                      name="description"
-                      value={values.description}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      label=""
-                      placeholder="Description"
-                      error={
-                        touched.description && errors.description
-                          ? errors.description
-                          : ""
-                      }
-                      inputProps={{ min: 0 }}
+                      placeholder="Email"
+                      error={touched.email && errors.email ? errors.email : ""}
                     />
                   </Grid>
                 </Grid>
 
-                <Grid item container xs={12} spacing={1}>
+                <Grid
+                  item
+                  container
+                  xs={12}
+                  spacing={1}
+                  sx={(theme) => ({ marginTop: theme.spacing(0.3) })}
+                >
                   <Grid item container xs={6}>
                     <Button
                       size="medium"
@@ -150,7 +124,7 @@ export const CreateAnnouncementForm = ({ toggleShow }) => {
                         typography: { xs: "body2Bold", md: "h4Medium" },
                       }}
                     >
-                      Create
+                      Send Invite
                     </Button>
                   </Grid>
                 </Grid>

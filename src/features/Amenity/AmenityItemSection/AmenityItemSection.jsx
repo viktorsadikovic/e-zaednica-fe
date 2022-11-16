@@ -1,6 +1,6 @@
 import { Autocomplete, Grid, TextField } from "@mui/material";
-import { useState } from "react";
-import { useEffect } from "react";
+import { saveAs } from "file-saver";
+import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import { useAmenityItems } from "../../../redux/amenityItems";
 import { useResidentProfiles } from "../../../redux/profiles";
 import { Input } from "../../../ui/components/Input";
@@ -19,14 +19,14 @@ const sortParams = {
   "Title Descending": "titleDesc",
 };
 
-export const AmenityItemSection = () => {
+export const AmenityItemSection = forwardRef((props, ref) => {
   const [open, setOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const [
     { amenityItems, isLoading },
-    { getAmenityItemsByResident, findAmenityItems },
+    { getAmenityItemsByResident, findAmenityItems, exportAmenityItems },
   ] = useAmenityItems();
-  const [{ activeProfile }] = useResidentProfiles();
+  const [{ activeProfile, residents }] = useResidentProfiles();
   const [queryParams, setQueryParams] = useQueryParams({
     search: undefined,
     status: "",
@@ -37,8 +37,9 @@ export const AmenityItemSection = () => {
   const debouncedSetQueryParams = useDebounce(setQueryParams);
 
   useEffect(() => {
-    if (activeProfile?._id) {
-      // getAmenityItemsByResident({ id: activeProfile?._id });
+    if (activeProfile?.role === "ADMIN") {
+      findAmenityItems(queryParams);
+    } else {
       findAmenityItems(queryParams);
       setQueryParams({ ...queryParams, resident: activeProfile?._id });
     }
@@ -48,7 +49,6 @@ export const AmenityItemSection = () => {
     queryParams.status,
     queryParams.sort,
     queryParams.search,
-    activeProfile?._id,
   ]);
 
   const renderAmenityItems = () => {
@@ -67,24 +67,45 @@ export const AmenityItemSection = () => {
           amenityItem={amenityItem}
           setOpen={setOpen}
           setSelectedId={setSelectedId}
+          findAmenityItems={() => findAmenityItems(queryParams)}
         />
       );
     });
   };
+
+  useImperativeHandle(ref, () => ({
+    download() {
+      exportAmenityItems(queryParams)
+        .unwrap()
+        .then((res) => {
+          const data = res;
+          const blob = new Blob([data], { type: "text/csv" });
+          saveAs(blob, "Amenity Items.csv");
+        });
+    },
+  }));
   return (
-    <Grid container justifyContent="space-between">
+    <Grid container>
       <CustomModal
         dialogTitle="Submit Amenity Item"
         dialogContent={
-          <SubmitAmenityItemForm selectedId={selectedId} setOpen={setOpen} />
+          <SubmitAmenityItemForm
+            selectedId={selectedId}
+            setOpen={setOpen}
+            queryParams={queryParams}
+          />
         }
         open={open}
         onClose={() => setOpen(false)}
         actionsContent={<></>}
       />
-      <Grid container justifyContent="space-between">
-        <Grid item xs={0} md={6}></Grid>
-        <Grid item xs={12} md={1}>
+      <Grid
+        container
+        justifyContent="space-between"
+        sx={{ marginBottom: "1rem" }}
+      >
+        <Grid item xs={0} md={activeProfile?.role === "ADMIN" ? 3 : 5}></Grid>
+        <Grid item xs={12} md={2}>
           <Autocomplete
             sx={{
               border: "0.0625rem solid #7c839e",
@@ -108,7 +129,7 @@ export const AmenityItemSection = () => {
             }}
           />
         </Grid>
-        <Grid item xs={12} md={1}>
+        <Grid item xs={12} md={2}>
           <Autocomplete
             sx={{
               border: "0.0625rem solid #7c839e",
@@ -122,34 +143,7 @@ export const AmenityItemSection = () => {
                 borderWidth: "0.125rem",
               },
             }}
-            options={[...Object.keys(sortParams)]}
-            defaultValue="Date"
-            renderInput={(props) => <TextField {...props} />}
-            onChange={(e, value) => {
-              if (value) {
-                // debouncedSetQueryParams({
-                //   ...queryParams,
-                //   sort: sortParams[value],
-                // });
-              }
-            }}
-          />
-        </Grid>
-        <Grid item xs={12} md={1}>
-          <Autocomplete
-            sx={{
-              border: "0.0625rem solid #7c839e",
-              borderRadius: "0.188rem",
-              [`:hover`]: {
-                borderColor: colors.primary.dark3,
-                borderWidth: "0.0925rem",
-              },
-              [`&.Mui-focused`]: {
-                borderColor: colors.primary.dark3,
-                borderWidth: "0.125rem",
-              },
-            }}
-            options={["PENDING", "UNDER REVIEW", "ACCEPTED", "DENIED"]}
+            options={["PENDING", "UNDER REVIEW", "ACCEPTED", "REJECTED"]}
             renderInput={(props) => (
               <TextField {...props} placeholder="Status" />
             )}
@@ -161,6 +155,43 @@ export const AmenityItemSection = () => {
             }}
           />
         </Grid>
+        {activeProfile?.role === "ADMIN" && (
+          <Grid item xs={12} md={2}>
+            <Autocomplete
+              sx={{
+                border: "0.0625rem solid #7c839e",
+                borderRadius: "0.188rem",
+                [`:hover`]: {
+                  borderColor: colors.primary.dark3,
+                  borderWidth: "0.0925rem",
+                },
+                [`&.Mui-focused`]: {
+                  borderColor: colors.primary.dark3,
+                  borderWidth: "0.125rem",
+                },
+              }}
+              options={residents.map(
+                (resident) =>
+                  `${resident.user.firstName} ${resident.user.lastName}`
+              )}
+              renderInput={(props) => (
+                <TextField {...props} placeholder="Resident" />
+              )}
+              onChange={(e, value) => {
+                setQueryParams({
+                  ...queryParams,
+                  resident: value
+                    ? residents.find(
+                        (resident) =>
+                          resident.user.firstName === value.split(" ")[0] &&
+                          resident.user.lastName === value.split(" ")[1]
+                      )._id
+                    : "",
+                });
+              }}
+            />
+          </Grid>
+        )}
         <Grid item xs={12} md={2}>
           <Input
             type="text"
@@ -180,8 +211,10 @@ export const AmenityItemSection = () => {
           />
         </Grid>
       </Grid>
-      {isLoading && <LoadingSpinner />}
-      {!isLoading && renderAmenityItems()}
+      <Grid container alignItems="stretch">
+        {isLoading && <LoadingSpinner />}
+        {!isLoading && renderAmenityItems()}
+      </Grid>
     </Grid>
   );
-};
+});

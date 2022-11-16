@@ -1,13 +1,13 @@
-import { Grid, useMediaQuery, Typography } from "@mui/material";
+import { Grid, Typography, useMediaQuery } from "@mui/material";
+import { Form, Formik } from "formik";
 import React, { useState } from "react";
-import colors from "../../../ui/utils/colors";
-import { Button } from "../../../ui/components/Button";
-import { Input } from "../../../ui/components/Input";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import routes, { getAbsolutePath } from "../../../routes";
 import * as Yup from "yup";
 import AuthService from "../../../api/AuthService";
-import { Form, Formik } from "formik";
+import routes, { getAbsolutePath } from "../../../routes";
+import { Button } from "../../../ui/components/Button";
+import { Input } from "../../../ui/components/Input";
+import colors from "../../../ui/utils/colors";
 
 const validationSchema = Yup.object().shape({
   password: Yup.string()

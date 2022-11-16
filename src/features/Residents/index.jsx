@@ -1,12 +1,16 @@
-import { Grid, Typography } from "@mui/material";
-import { useEffect } from "react";
-import { useState } from "react";
-import ResidentProfileService from "../../api/ResidentProfileService";
-import colors from "../../ui/utils/colors";
-import { ProfilesAccordion } from "./ProfilesAccordion";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
+import DownloadIcon from "@mui/icons-material/Download";
+import { Grid, Typography } from "@mui/material";
+import { saveAs } from "file-saver";
+import { useEffect, useState } from "react";
+import ResidentProfileService from "../../api/ResidentProfileService";
+import { useResidentProfiles } from "../../redux/profiles";
 import { Button } from "../../ui/components/Button";
 import CustomModal from "../../ui/components/Modal/CustomModal";
+import colors from "../../ui/utils/colors";
+import { InvitePeopleForm } from "./InvitePeopleForm";
+import { ProfilesAccordion } from "./ProfilesAccordion";
+import { ProposeNewAdminForm } from "./ProposeNewAdminForm";
 
 export const Residents = () => {
   const [expanded, setExpanded] = useState(false);
@@ -18,6 +22,11 @@ export const Residents = () => {
   const [selectedId, setSelectedId] = useState(null);
   const [selectedAction, setSelectedAction] = useState(null);
   const [show, setShow] = useState(false);
+  const [selectedModal, setSelectedModal] = useState(false);
+  const [
+    { residents, activeProfile },
+    { getResidentsByHouseCouncil, exportResidents },
+  ] = useResidentProfiles();
 
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
@@ -55,8 +64,50 @@ export const Residents = () => {
     );
   }, []);
 
+  useEffect(() => {
+    getResidentsByHouseCouncil();
+  }, [getResidentsByHouseCouncil]);
+
+  const download = () => {
+    exportResidents()
+      .unwrap()
+      .then((res) => {
+        const data = res;
+        const blob = new Blob([data], { type: "text/csv" });
+        saveAs(blob, "House Council Residents.csv");
+      });
+  };
+
   return (
     <Grid container>
+      <CustomModal
+        dialogTitle="Invite people to join your house council"
+        dialogContent={
+          <InvitePeopleForm
+            toggleShow={(val) => {
+              setOpen(val);
+            }}
+          />
+        }
+        open={open && selectedModal === "invitePeople"}
+        onClose={() => setOpen(false)}
+        actionsContent={<></>}
+      />
+      <CustomModal
+        dialogTitle="Create a poll for new house council administrator"
+        dialogContent={
+          <ProposeNewAdminForm
+            toggleShow={(val) => {
+              setOpen(val);
+            }}
+            residents={residents}
+            dashboard={false}
+          />
+        }
+        open={open && selectedModal === "changeAdmin"}
+        onClose={() => setOpen(false)}
+        actionsContent={<></>}
+      />
       <CustomModal
         dialogTitle={`${selectedAction} Resident Profile`}
         dialogContent={
@@ -115,27 +166,43 @@ export const Residents = () => {
               cursor: "pointer",
             }}
           >
-            <Button size="small" type="button" onClick={() => setOpen(true)}>
+            <Button
+              size="small"
+              type="button"
+              onClick={() => {
+                setOpen(true);
+                setSelectedModal("invitePeople");
+              }}
+            >
               {" "}
               <AddCircleIcon sx={{ marginRight: "0.5rem" }} /> Invite People
             </Button>
           </Typography>
         </Grid>
-        <Grid item md={4} alignItems="center">
-          <Typography
-            variant="buttonSmall"
-            sx={{
-              width: "100%",
-              color: colors.primary.main,
-              cursor: "pointer",
-            }}
-          >
-            <Button size="small" type="button" onClick={() => setOpen(true)}>
-              {" "}
-              <AddCircleIcon sx={{ marginRight: "0.5rem" }} /> Change Admin
-            </Button>
-          </Typography>
-        </Grid>
+        {activeProfile?.role === "ADMIN" && (
+          <Grid item md={4} alignItems="center">
+            <Typography
+              variant="buttonSmall"
+              sx={{
+                width: "100%",
+                color: colors.primary.main,
+                cursor: "pointer",
+              }}
+            >
+              <Button
+                size="small"
+                type="button"
+                onClick={() => {
+                  setOpen(true);
+                  setSelectedModal("changeAdmin");
+                }}
+              >
+                {" "}
+                <AddCircleIcon sx={{ marginRight: "0.5rem" }} /> Change Admin
+              </Button>
+            </Typography>
+          </Grid>
+        )}
       </Grid>
 
       <Grid item xs={12}>
@@ -172,6 +239,30 @@ export const Residents = () => {
           setSelectedId={setSelectedId}
           setSelectedAction={setSelectedAction}
         />
+      </Grid>
+      <Grid container item xs={12} sx={{ marginY: "2rem" }}>
+        <Grid item md={2} sx={{ marginLeft: "auto", textAlign: "center" }}>
+          <Typography
+            variant="buttonSmall"
+            sx={{
+              width: "100%",
+              color: colors.primary.main,
+              cursor: "pointer",
+            }}
+          >
+            <Button
+              size="small"
+              type="button"
+              onClick={() => {
+                download();
+              }}
+            >
+              {" "}
+              <DownloadIcon sx={{ marginRight: "0.5rem" }} /> Export All
+              Residents
+            </Button>
+          </Typography>
+        </Grid>
       </Grid>
     </Grid>
   );

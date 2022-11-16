@@ -43,7 +43,7 @@ const PasswordSettings = ({ handleChange, expanded }) => {
       .unwrap()
       .then(() => {
         actions.resetForm();
-        seterrorMessageBackend('')
+        seterrorMessageBackend("");
         setSuccess(true);
         setTimeout(() => {
           setSuccess(false);

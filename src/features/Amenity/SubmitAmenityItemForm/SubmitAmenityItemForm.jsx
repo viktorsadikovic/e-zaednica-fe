@@ -1,7 +1,10 @@
 import { Box, FormLabel, Grid } from "@mui/material";
+import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { Form, Formik } from "formik";
+import { useState } from "react";
 import * as Yup from "yup";
-import { string, mixed } from "yup";
+import { mixed, string } from "yup";
+import storage from "../../../firebase";
 import { useAmenityItems } from "../../../redux/amenityItems";
 import { Button } from "../../../ui/components/Button";
 import { Input } from "../../../ui/components/Input";
@@ -17,23 +20,47 @@ const validationSchema = Yup.object().shape({
   document: mixed().optional(),
 });
 
-export const SubmitAmenityItemForm = ({ selectedId, setOpen }) => {
-  const [{ isLoading, error }, { submitAmenityItem }] = useAmenityItems();
+export const SubmitAmenityItemForm = ({ selectedId, setOpen, queryParams }) => {
+  const [{ error }, { submitAmenityItem, findAmenityItems }] =
+    useAmenityItems();
+  const [isLoading, setIsLoading] = useState(false);
+  const [selectedFile, setSelectedFile] = useState();
 
   const handleSubmit = (data) => {
-    console.log(selectedId, data);
-    // const formData = new FormData();
-    // formData.append("document", data.document);
-    // formData.append("note", data.note);
+    handleUpload(selectedId, data, selectedFile);
+  };
 
-    submitAmenityItem({
-      id: selectedId,
-      data: { document: data.document, note: data.note },
-    })
-      .unwrap()
-      .then(() => {
-        setOpen(false);
-      });
+  const handleUpload = (selectedId, data, selectedFile) => {
+    const storageRef = ref(storage, `/files/${selectedFile.name}`);
+    const uploadTask = uploadBytesResumable(storageRef, selectedFile);
+
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {
+        setIsLoading(true);
+      },
+      (err) => {
+        console.log(err);
+        setIsLoading(false);
+      },
+      () => {
+        getDownloadURL(uploadTask.snapshot.ref).then((url) => {
+          submitAmenityItem({
+            id: selectedId,
+            data: {
+              note: data.note,
+              document: url,
+            },
+          })
+            .unwrap()
+            .then(() => {
+              setOpen(false);
+              setIsLoading(false);
+              findAmenityItems(queryParams);
+            });
+        });
+      }
+    );
   };
 
   return (
@@ -107,6 +134,7 @@ export const SubmitAmenityItemForm = ({ selectedId, setOpen }) => {
                       // value={values.document}
                       onChange={(e) => {
                         setFieldValue("document", e.currentTarget.files[0]);
+                        setSelectedFile(e.currentTarget.files[0]);
                       }}
                       onBlur={handleBlur}
                       label=""

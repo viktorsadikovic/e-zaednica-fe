@@ -9,6 +9,9 @@ const ResidentProfileService = {
   getActiveProfile: () => {
     return axiosClient.get(`${RESIDENT_PROFILE_PREFIX}/active`);
   },
+  getResidentsByHouseCouncil: () => {
+    return axiosClient.get(`${RESIDENT_PROFILE_PREFIX}/by-house-council`);
+  },
   edit: (data) => {
     return axiosClient.post(`${RESIDENT_PROFILE_PREFIX}/edit`, data);
   },
@@ -23,6 +26,9 @@ const ResidentProfileService = {
   },
   getProfilesByStatus: (status) => {
     return axiosClient.get(`${RESIDENT_PROFILE_PREFIX}/${status}/status`);
+  },
+  exportResidents: () => {
+    return axiosClient.get(`${RESIDENT_PROFILE_PREFIX}/export`);
   },
 };
 

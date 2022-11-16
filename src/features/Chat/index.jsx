@@ -1,15 +1,14 @@
+import PermMediaIcon from "@mui/icons-material/PermMedia";
 import { Grid, IconButton, Paper } from "@mui/material";
+import { useEffect, useRef, useState } from "react";
+import { io } from "socket.io-client";
+import { useChat } from "../../redux/chat";
+import { useNotifications } from "../../redux/notification";
+import { useResidentProfiles } from "../../redux/profiles";
 import { CommentInput } from "../../ui/components/CommentInput/CommentInput";
 import colors from "../../ui/utils/colors";
 import { MessageLeft } from "./Message/MessageLeft";
 import { MessageRight } from "./Message/MessageRight";
-import PermMediaIcon from "@mui/icons-material/PermMedia";
-import { useState } from "react";
-import { useRef } from "react";
-import { useEffect } from "react";
-import { io } from "socket.io-client";
-import { useResidentProfiles } from "../../redux/profiles";
-import { useChat } from "../../redux/chat";
 
 export const Chat = () => {
   const [message, setMessage] = useState("");
@@ -19,6 +18,10 @@ export const Chat = () => {
     { chat, messages, isLoading, error },
     { getActiveChat, getMessagesByChat },
   ] = useChat();
+  const [
+    { chatNotifications },
+    { markNotificationsAsRead, getChatNotifications },
+  ] = useNotifications();
 
   const [socket, setSocket] = useState();
 
@@ -38,6 +41,14 @@ export const Chat = () => {
   useEffect(() => {
     getActiveChat().unwrap();
   }, [getActiveChat, chat?._id]);
+
+  useEffect(() => {
+    markNotificationsAsRead({ type: "CHAT" })
+      .unwrap()
+      .then(() => {
+        getChatNotifications();
+      });
+  }, [markNotificationsAsRead, chatNotifications]);
 
   const messageListener = (message) => {
     getMessagesByChat({ id: chat?._id }).unwrap();
@@ -87,6 +98,7 @@ export const Chat = () => {
           boxShadow: "rgb(0 94 124 / 15%) 0px 0px 21px",
           border: "none",
           borderRadius: "5px",
+          marginTop: 0,
         }}
       >
         <Grid

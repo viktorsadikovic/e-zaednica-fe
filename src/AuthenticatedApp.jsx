@@ -28,11 +28,16 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 
 export default function AuthenticatedApp() {
   const open = useSelector((state) => state.menu.isSidebarOpened);
-  const [{}, { getActiveProfile }] = useResidentProfiles();
+  const [{ residents }, { getActiveProfile, getResidentsByHouseCouncil }] =
+    useResidentProfiles();
 
   useEffect(() => {
     getActiveProfile();
   }, [getActiveProfile]);
+
+  useEffect(() => {
+    getResidentsByHouseCouncil();
+  }, [getResidentsByHouseCouncil]);
 
   return (
     <Box sx={{ display: "flex" }}>

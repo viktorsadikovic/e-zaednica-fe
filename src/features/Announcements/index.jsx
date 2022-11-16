@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 import { useAnnouncements } from "../../redux/announcements";
 import { Button } from "../../ui/components/Button";
 import { Input } from "../../ui/components/Input";
-import LoadingSpinner from "../../ui/components/LoadingSpinner";
 import CustomModal from "../../ui/components/Modal/CustomModal";
 import colors from "../../ui/utils/colors";
 import { useDebounce } from "../../ui/utils/form";
@@ -131,8 +130,7 @@ const Announcements = () => {
             />
           </Grid>
         </Grid>
-        {isLoading && <LoadingSpinner />}
-        {!isLoading && renderAnnouncements()}
+        {renderAnnouncements()}
       </Grid>
       <Grid item xs={12} md={4}>
         <Grid container>

@@ -1,13 +1,15 @@
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { FormLabel, Grid } from "@mui/material";
+import { Avatar, FormLabel, Grid } from "@mui/material";
 import Accordion from "@mui/material/Accordion";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import Typography from "@mui/material/Typography";
+import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { Form, Formik } from "formik";
 import { useState } from "react";
 import * as Yup from "yup";
 import { string } from "yup";
+import storage from "../../firebase";
 import { useAuth } from "../../redux/auth";
 import { Button } from "../../ui/components/Button";
 import { DatePicker } from "../../ui/components/DatePicker/DatePicker";
@@ -15,7 +17,7 @@ import { Input } from "../../ui/components/Input";
 import colors from "../../ui/utils/colors";
 import {
   getDate18YearsAgo,
-  handleDatePickerOnChange,
+  handleDatePickerOnChange
 } from "../../ui/utils/dates";
 
 const validationSchema = Yup.object().shape({
@@ -23,23 +25,45 @@ const validationSchema = Yup.object().shape({
   lastName: string().required(),
   phone: string().required(),
   dob: string().required(),
+  profileImage: string(),
 });
 
 const BasicSettings = ({ handleChange, expanded }) => {
   const [{ user, isLoading }, { updateUser }] = useAuth();
   const [success, setSuccess] = useState(false);
-  
-  console.log(user)
+  const [selectedFile, setSelectedFile] = useState();
+
   const handleSubmit = ({ firstName, lastName, phone, dob }) => {
-    updateUser({ firstName, lastName, phone, dob })
-      .unwrap()
-      .then(() => {
-        setSuccess(true);
-        setTimeout(() => {
-          setSuccess(false);
-        }, 5000);
-      });
+    handleUpload(firstName, lastName, phone, dob, selectedFile);
   };
+
+  const handleUpload = (firstName, lastName, phone, dob, selectedFile) => {
+    const storageRef = ref(storage, `/files/${selectedFile.name}`);
+    const uploadTask = uploadBytesResumable(storageRef, selectedFile);
+
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {
+        // setIsLoading(true);
+      },
+      (err) => {
+        console.log(err);
+      },
+      () => {
+        getDownloadURL(uploadTask.snapshot.ref).then((url) => {
+          updateUser({ firstName, lastName, phone, dob, profileImage: url })
+            .unwrap()
+            .then(() => {
+              setSuccess(true);
+              setTimeout(() => {
+                setSuccess(false);
+              }, 5000);
+            });
+        });
+      }
+    );
+  };
+
   return (
     <Accordion
       expanded={expanded === "panel1"}
@@ -241,6 +265,62 @@ const BasicSettings = ({ handleChange, expanded }) => {
                       }}
                       maxDate={getDate18YearsAgo()}
                     />
+                  </Grid>
+                  <Grid
+                    item
+                    xs={12}
+                    md={12}
+                    sx={{ paddingTop: "0px!important" }}
+                  >
+                    <FormLabel
+                      sx={(theme) => ({
+                        display: "block",
+                        fontSize: "0.875rem",
+                        fontWeight: 700,
+                        textTransform: "uppercase",
+                      })}
+                    >
+                      Profile Image
+                    </FormLabel>
+                    <Grid container paddingTop="1rem">
+                      <Grid item xs={3} md={1}>
+                        <Avatar
+                          alt="Remy Sharp"
+                          src={
+                            user.profileImage ||
+                            "https://www.pngall.com/wp-content/uploads/12/Avatar-Profile-Vector-PNG-Cutout.png"
+                          }
+                          sx={{
+                            width: { xs: 50, md: 60 },
+                            height: { xs: 50, md: 60 },
+                          }}
+                        />
+                      </Grid>
+                      <Grid item xs={9} md={11}>
+                        <Input
+                          autoComplete="profileImage"
+                          name="profileImage"
+                          type="file"
+                          // value={values.document}
+                          onChange={(e) => {
+                            setFieldValue(
+                              "profileImage",
+                              e.currentTarget.files[0]
+                            );
+                            setSelectedFile(e.currentTarget.files[0]);
+                          }}
+                          onBlur={handleBlur}
+                          label=""
+                          placeholder="Document"
+                          error={
+                            touched.profileImage && errors.profileImage
+                              ? errors.profileImage
+                              : ""
+                          }
+                          sx={{ marginBottom: "0px!important", border: "none" }}
+                        />
+                      </Grid>
+                    </Grid>
                   </Grid>
                 </Grid>
 

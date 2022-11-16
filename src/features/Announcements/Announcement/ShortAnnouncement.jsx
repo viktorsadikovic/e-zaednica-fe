@@ -40,7 +40,10 @@ const ShortAnnouncement = ({ announcement }) => {
           <Grid item xs={1}>
             <Avatar
               alt="Remy Sharp"
-              src="https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=2000"
+              src={
+                announcement.user.profileImage ||
+                "https://www.pngall.com/wp-content/uploads/12/Avatar-Profile-Vector-PNG-Cutout.png"
+              }
               sx={{
                 width: { xs: 34, md: 44 },
                 height: { xs: 34, md: 44 },

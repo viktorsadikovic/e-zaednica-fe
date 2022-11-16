@@ -1,3 +1,4 @@
+import AddCircleIcon from "@mui/icons-material/AddCircle";
 import {
   Autocomplete,
   FormControl,
@@ -8,21 +9,19 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useEffect } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAmenities } from "../../../redux/amenity";
 import { useResidentProfiles } from "../../../redux/profiles";
 import { Button } from "../../../ui/components/Button";
+import { Input } from "../../../ui/components/Input";
+import LoadingSpinner from "../../../ui/components/LoadingSpinner";
 import CustomModal from "../../../ui/components/Modal/CustomModal";
 import colors from "../../../ui/utils/colors";
+import { useDebounce } from "../../../ui/utils/form";
+import { useQueryParams } from "../../../ui/utils/query";
 import AmenityCard from "../AmenityCard/AmenityCard";
 import { CreateAmenityForm } from "../CreateAmenityForm/CreateAmenityForm";
 import { EditAmenityForm } from "../EditAmenityForm/EditAmenityForm";
-import AddCircleIcon from "@mui/icons-material/AddCircle";
-import { Input } from "../../../ui/components/Input";
-import { useQueryParams } from "../../../ui/utils/query";
-import { useDebounce } from "../../../ui/utils/form";
-import LoadingSpinner from "../../../ui/components/LoadingSpinner";
 
 const sortParams = {
   "Date Ascending": "dateCreatedAsc",
@@ -255,7 +254,7 @@ export const AmenitySection = () => {
           sx={{ marginBottom: "1rem" }}
           justifyContent="space-between"
         >
-          <Grid item md={5} alignItems="center">
+          <Grid item md={3} alignItems="center">
             <Typography
               variant="buttonSmall"
               sx={{
@@ -271,7 +270,7 @@ export const AmenitySection = () => {
               </Button>
             </Typography>
           </Grid>
-          <Grid item xs={12} md={1}>
+          <Grid item xs={12} md={2}>
             <Autocomplete
               sx={{
                 border: "0.0625rem solid #7c839e",
@@ -317,16 +316,10 @@ export const AmenitySection = () => {
               )}
               onChange={(e, value) => {
                 setQueryParams({ ...queryParams, status: value || "" });
-                // if (value) {
-                //   debouncedSetQueryParams({
-                //     ...queryParams,
-                //     status: value,
-                //   });
-                // }
               }}
             />
           </Grid>
-          <Grid item xs={12} md={1}>
+          <Grid item xs={12} md={2}>
             <Autocomplete
               sx={{
                 border: "0.0625rem solid #7c839e",

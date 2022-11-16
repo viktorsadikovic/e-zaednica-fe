@@ -1,10 +1,10 @@
 import { Grid } from "@mui/material";
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import routes, { getAbsolutePath } from "../../routes";
 import { Button } from "../../ui/components/Button";
 import { Icon, IconName } from "../../ui/components/Icon";
 import colors from "../../ui/utils/colors";
-import routes, { getAbsolutePath } from "../../routes";
 
 const NotFound = () => {
   const navigate = useNavigate();

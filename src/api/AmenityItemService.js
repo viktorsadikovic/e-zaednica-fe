@@ -13,12 +13,19 @@ const AmenityItemService = {
     return axiosClient.get(`${AMENITY_ITEM_PREFIX}/by-resident/${id}`);
   },
   submitAmenityItem: (id, data) => {
-    return axiosClient.post(`${AMENITY_ITEM_PREFIX}/submit/${id}`, data);
+    return axiosClient.post(`${AMENITY_ITEM_PREFIX}/submit/${id}`, data, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
   },
   changeAmenityItemStatus: (id, status) => {
     return axiosClient.post(
       `${AMENITY_ITEM_PREFIX}/change-status/${id}/${status}`
     );
+  },
+  exportAmenityItems: (params) => {
+    return axiosClient.get(`${AMENITY_ITEM_PREFIX}/export`, { params: params });
   },
 };
 
