@@ -36,6 +36,7 @@ export const AmenityItemCard = ({
 
   const [{}, { changeAmenityItemStatus }] = useAmenityItems();
   const [{ activeProfile }] = useResidentProfiles();
+  console.log(activeProfile, amenityItem)
 
   const reviewAmenityItem = (status) => {
     changeAmenityItemStatus({
@@ -184,7 +185,7 @@ export const AmenityItemCard = ({
             }}
           />
 
-          {!dashboard &&
+          {!dashboard && activeProfile?._id === amenityItem.resident[0]._id &&
             amenityItem.status !== "ACCEPTED" &&
             amenityItem.status !== "UNDER REVIEW" && (
               <Button

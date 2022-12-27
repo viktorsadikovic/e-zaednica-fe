@@ -17,7 +17,7 @@ import { Input } from "../../ui/components/Input";
 import colors from "../../ui/utils/colors";
 import {
   getDate18YearsAgo,
-  handleDatePickerOnChange
+  handleDatePickerOnChange,
 } from "../../ui/utils/dates";
 
 const validationSchema = Yup.object().shape({
@@ -38,30 +38,41 @@ const BasicSettings = ({ handleChange, expanded }) => {
   };
 
   const handleUpload = (firstName, lastName, phone, dob, selectedFile) => {
-    const storageRef = ref(storage, `/files/${selectedFile.name}`);
-    const uploadTask = uploadBytesResumable(storageRef, selectedFile);
+    if (selectedFile) {
+      const storageRef = ref(storage, `/files/${selectedFile.name}`);
+      const uploadTask = uploadBytesResumable(storageRef, selectedFile);
 
-    uploadTask.on(
-      "state_changed",
-      (snapshot) => {
-        // setIsLoading(true);
-      },
-      (err) => {
-        console.log(err);
-      },
-      () => {
-        getDownloadURL(uploadTask.snapshot.ref).then((url) => {
-          updateUser({ firstName, lastName, phone, dob, profileImage: url })
-            .unwrap()
-            .then(() => {
-              setSuccess(true);
-              setTimeout(() => {
-                setSuccess(false);
-              }, 5000);
-            });
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          // setIsLoading(true);
+        },
+        (err) => {
+          console.log(err);
+        },
+        () => {
+          getDownloadURL(uploadTask.snapshot.ref).then((url) => {
+            updateUser({ firstName, lastName, phone, dob, profileImage: url })
+              .unwrap()
+              .then(() => {
+                setSuccess(true);
+                setTimeout(() => {
+                  setSuccess(false);
+                }, 5000);
+              });
+          });
+        }
+      );
+    } else {
+      updateUser({ firstName, lastName, phone, dob })
+        .unwrap()
+        .then(() => {
+          setSuccess(true);
+          setTimeout(() => {
+            setSuccess(false);
+          }, 5000);
         });
-      }
-    );
+    }
   };
 
   return (

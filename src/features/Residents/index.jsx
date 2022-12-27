@@ -109,7 +109,7 @@ export const Residents = () => {
         actionsContent={<></>}
       />
       <CustomModal
-        dialogTitle={`${selectedAction} Resident Profile`}
+        dialogTitle={`${selectedAction?.slice(0, -1)} Resident Profile`}
         dialogContent={
           <Typography
             variant="h6"
@@ -117,7 +117,7 @@ export const Residents = () => {
             component="div"
             sx={{ marginTop: "1rem" }}
           >
-            {`Are you sure you want to ${selectedAction?.toLowerCase()} this resident profile`}
+            {`Are you sure you want to ${selectedAction?.toLowerCase().slice(0, -1)} this resident profile`}
           </Typography>
         }
         open={show}

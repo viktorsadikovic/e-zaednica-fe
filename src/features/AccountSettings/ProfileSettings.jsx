@@ -48,7 +48,7 @@ const ProfileSettings = ({ handleChange, expanded }) => {
             <Typography
               sx={{ width: "33%", flexShrink: 0, fontSize: "1.5rem" }}
             >
-              Profile
+              House Council Profile
             </Typography>
           </AccordionSummary>
           <AccordionDetails>

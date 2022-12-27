@@ -23,8 +23,9 @@ const JoinHouseCouncilCard = () => {
       .then(() => {
         // navigate(getAbsolutePath(routes.dashboard.path))
         getResidentProfiles();
-        setApartmentNumber(null);
-        setCode(null);
+        setApartmentNumber('');
+        console.log("keke")
+        setCode('');
       });
   };
 
@@ -55,6 +56,7 @@ const JoinHouseCouncilCard = () => {
                   type="text"
                   name="code"
                   label="code"
+                  value={code}
                   autoComplete="text"
                   placeholder="Code"
                   onChange={(e) => setCode(e.target.value)}
@@ -78,6 +80,7 @@ const JoinHouseCouncilCard = () => {
                   label="apartmentNumber"
                   autoComplete="text"
                   placeholder="Apartment No."
+                  value={apartmentNumber}
                   onChange={(e) => setApartmentNumber(e.target.value)}
                   required
                   hideErrorElement
