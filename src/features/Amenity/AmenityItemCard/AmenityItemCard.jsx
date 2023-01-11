@@ -68,10 +68,10 @@ export const AmenityItemCard = ({
     <Grid item xs={12} md={dashboard ? 6 : 4}>
       <Card
         sx={{
-          maxWidth: "100%",
+          minWidth: 275,
           boxShadow: "rgb(0 94 124 / 15%) 0px 0px 21px",
           margin: "0.5rem",
-          minHeight: dashboard ? 250 : 320,
+          minHeight: dashboard ? 250 : 350,
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
@@ -138,11 +138,25 @@ export const AmenityItemCard = ({
                 ? dayjs(amenityItem.dueDate).format("ll")
                 : ""}
             </Grid>
+            <Grid
+              item
+              xs={12}
+              md={12}
+              sx={{ fontSize: 15, marginBottom: "0.5rem" }}
+            >
+              <Typography
+                sx={{ fontSize: 15, fontWeight: "bold" }}
+                color={colors.textGray}
+              >
+                Resident
+              </Typography>
+              {amenityItem.user[0].firstName} {amenityItem.user[0].lastName}
+            </Grid>
             {amenityItem.note && (
               <Grid
                 item
                 xs={12}
-                md={12}
+                md={6}
                 sx={{ fontSize: 15, marginBottom: "0.5rem" }}
               >
                 <Typography
@@ -158,7 +172,7 @@ export const AmenityItemCard = ({
               <Grid
                 item
                 xs={12}
-                md={12}
+                md={6}
                 sx={{ fontSize: 15, marginBottom: "0.5rem" }}
               >
                 <Button
